@@ -11,7 +11,7 @@ main : Html.Html msg
 main =
     let
         sudoku =
-            case resolveSudoku initSudoku of
+            case resolveSudoku sudokuGrid of
                 Nothing ->
                     initSudoku
 
@@ -20,6 +20,9 @@ main =
     in
         Html.div []
             [ Html.h1 [] [ Html.text "Sudoku - Power thigh" ]
+            , Html.h2 [] [ Html.text "Attempting to solve" ]
+            , Html.div [ class "sudoku" ] <| stringify sudokuGrid
+            , Html.h2 [] [ Html.text "Solution" ]
             , Html.div [ class "sudoku" ] <| stringify sudoku
             ]
 
@@ -45,9 +48,134 @@ emptyCell =
     { value = 0, editable = True }
 
 
+fixedCell : Int -> Cell
+fixedCell value =
+    { value = value, editable = False }
+
+
 initSudoku : Sudoku
 initSudoku =
     { cells = Array.repeat 81 emptyCell
+    , current_position = 0
+    }
+
+
+sudokuGrid : Sudoku
+sudokuGrid =
+    { cells =
+        Array.fromList
+            [ -- First line
+              -- 1
+              emptyCell
+            , emptyCell
+            , fixedCell 3
+              -- 2
+            , fixedCell 9
+            , emptyCell
+            , emptyCell
+              -- 3
+            , fixedCell 7
+            , fixedCell 6
+            , emptyCell
+              -- 1
+            , emptyCell
+            , fixedCell 4
+            , emptyCell
+              -- 2
+            , emptyCell
+            , emptyCell
+            , fixedCell 6
+              -- 3
+            , emptyCell
+            , emptyCell
+            , fixedCell 9
+              -- 1
+            , fixedCell 6
+            , emptyCell
+            , fixedCell 7
+              -- 2
+            , emptyCell
+            , fixedCell 1
+            , emptyCell
+              -- 3
+            , emptyCell
+            , emptyCell
+            , fixedCell 4
+              -- Second Line
+              -- 4
+            , fixedCell 2
+            , emptyCell
+            , emptyCell
+              -- 5
+            , fixedCell 6
+            , fixedCell 7
+            , emptyCell
+              -- 6
+            , emptyCell
+            , fixedCell 9
+            , emptyCell
+              -- 4
+            , emptyCell
+            , emptyCell
+            , fixedCell 4
+              -- 5
+            , fixedCell 3
+            , emptyCell
+            , fixedCell 5
+              -- 6
+            , fixedCell 6
+            , emptyCell
+            , emptyCell
+              -- 4
+            , emptyCell
+            , fixedCell 1
+            , emptyCell
+              -- 5
+            , emptyCell
+            , fixedCell 4
+            , fixedCell 9
+              -- 6
+            , emptyCell
+            , emptyCell
+            , fixedCell 7
+              -- Last line
+              -- 7
+            , fixedCell 7
+            , emptyCell
+            , emptyCell
+              -- 8
+            , emptyCell
+            , fixedCell 9
+            , emptyCell
+              -- 9
+            , fixedCell 2
+            , emptyCell
+            , fixedCell 1
+              -- 7
+            , fixedCell 3
+            , emptyCell
+            , emptyCell
+              -- 8
+            , fixedCell 2
+            , emptyCell
+            , emptyCell
+              -- 9
+            , emptyCell
+            , fixedCell 4
+            , emptyCell
+              -- 7
+            , emptyCell
+            , fixedCell 2
+            , fixedCell 9
+              -- 8
+            , emptyCell
+            , emptyCell
+            , fixedCell 8
+              -- 9
+            , fixedCell 5
+            , emptyCell
+            , emptyCell
+            ]
     , current_position = 0
     }
 
@@ -338,7 +466,13 @@ stringify : Sudoku -> List (Html.Html msg)
 stringify sudoku =
     Array.toList sudoku.cells
         |> List.map (.value)
-        |> List.map toString
+        |> List.map
+            (\n ->
+                if n == 0 then
+                    "_"
+                else
+                    toString n
+            )
         |> List.groupsOf 9
         |> List.map stringifyRow
         |> List.map (\n -> Html.div [] [ Html.text n ])
