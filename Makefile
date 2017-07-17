@@ -23,3 +23,6 @@ clean-build:
 
 clean: clean-build
 	rm -fr elm-stuff/ .venv build/app.js app.js
+
+start:
+	elm-make App.elm --output elm.js && node run.js
