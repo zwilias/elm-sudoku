@@ -1,8 +1,10 @@
 module Main exposing (..)
 
 import Array exposing (Array)
+import List.Extra as List
 import Set
 import Html
+import Html.Attributes exposing (..)
 
 
 main : Html.Html msg
@@ -18,8 +20,7 @@ main =
     in
         Html.div []
             [ Html.h1 [] [ Html.text "Sudoku - Power thigh" ]
-            , Html.text <| toString <| List.map (\n -> n.value) <| Array.toList sudoku.cells
-            , Html.text <| " (" ++ (toString sudoku.current_position) ++ ")"
+            , Html.div [ class "sudoku" ] <| stringify sudoku
             ]
 
 
@@ -67,7 +68,7 @@ get_current_cell sudoku =
 
 next_cell : Sudoku -> Maybe Sudoku
 next_cell sudoku =
-    if sudoku.current_position == 80 then
+    if sudoku.current_position == 81 then
         Nothing
     else
         let
@@ -156,7 +157,7 @@ brute_force sudoku =
             Nothing
 
         Just current_sudoku ->
-            increment_sudoku current_sudoku
+            resolveSudoku current_sudoku
 
 
 set_current_value : Int -> Sudoku -> Sudoku
@@ -326,6 +327,21 @@ squaresValid sudoku =
         List.foldl (&&) True <| List.map listValid squares
 
 
-stringify : Sudoku -> String
+stringifyRow : List String -> String
+stringifyRow row =
+    List.groupsOf 3 row
+        |> List.map (String.join " ")
+        |> String.join " | "
+
+
+stringify : Sudoku -> List (Html.Html msg)
 stringify sudoku =
-    "String"
+    Array.toList sudoku.cells
+        |> List.map (.value)
+        |> List.map toString
+        |> List.groupsOf 9
+        |> List.map stringifyRow
+        |> List.map (\n -> Html.div [] [ Html.text n ])
+        |> List.groupsOf 3
+        |> List.map (Html.div [])
+        |> List.intersperse (Html.div [] [ Html.text "------+-------+------" ])
