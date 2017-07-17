@@ -36,15 +36,15 @@ boardToSolve : Sudoku
 boardToSolve =
     let
         cells =
-            [ [ Nothing, Nothing, Just 3, Just 9, Nothing, Nothing, Just 7, Just 6, Nothing ]
-            , [ Nothing, Just 4, Nothing, Nothing, Nothing, Just 6, Nothing, Nothing, Just 9 ]
-            , [ Just 6, Nothing, Just 7, Nothing, Just 1, Nothing, Nothing, Nothing, Just 4 ]
-            , [ Just 2, Nothing, Nothing, Just 6, Just 7, Nothing, Nothing, Just 9, Nothing ]
-            , [ Nothing, Nothing, Just 4, Just 3, Nothing, Just 5, Just 6, Nothing, Nothing ]
-            , [ Nothing, Just 1, Nothing, Nothing, Just 4, Just 9, Nothing, Nothing, Just 7 ]
-            , [ Just 7, Nothing, Nothing, Nothing, Just 9, Nothing, Just 2, Nothing, Just 1 ]
-            , [ Just 3, Nothing, Nothing, Just 2, Nothing, Nothing, Nothing, Just 4, Nothing ]
-            , [ Nothing, Just 2, Just 9, Nothing, Nothing, Just 8, Just 5, Nothing, Nothing ]
+            [ [ Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing ]
+            , [ Just 8, Nothing, Nothing, Just 6, Nothing, Nothing, Nothing, Nothing, Nothing ]
+            , [ Nothing, Nothing, Nothing, Nothing, Just 3, Just 2, Just 9, Just 8, Just 6 ]
+            , [ Nothing, Nothing, Just 7, Nothing, Just 8, Nothing, Just 2, Nothing, Just 1 ]
+            , [ Nothing, Nothing, Nothing, Nothing, Just 2, Nothing, Just 3, Just 4, Nothing ]
+            , [ Just 9, Nothing, Nothing, Just 7, Nothing, Nothing, Just 6, Nothing, Nothing ]
+            , [ Just 1, Nothing, Nothing, Nothing, Nothing, Just 3, Nothing, Nothing, Nothing ]
+            , [ Just 5, Just 9, Nothing, Nothing, Just 7, Nothing, Nothing, Nothing, Nothing ]
+            , [ Nothing, Just 8, Nothing, Just 1, Just 5, Nothing, Nothing, Nothing, Nothing ]
             ]
                 |> List.concat
                 |> List.map
