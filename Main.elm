@@ -13,8 +13,8 @@ main =
                 Nothing ->
                     initSudoku
 
-                Just sudoku ->
-                    sudoku
+                Just s ->
+                    s
     in
         Html.div []
             [ Html.h1 [] [ Html.text "Sudoku - Power thigh" ]
@@ -67,7 +67,7 @@ get_current_cell sudoku =
 
 next_cell : Sudoku -> Maybe Sudoku
 next_cell sudoku =
-    if sudoku.current_position == 81 then
+    if sudoku.current_position == 80 then
         Nothing
     else
         let
@@ -261,13 +261,13 @@ getColumn id sudoku =
     Array.fromList
         [ Maybe.withDefault emptyCell <| Array.get id sudoku.cells
         , Maybe.withDefault emptyCell <| Array.get (id + 9) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 18) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 27) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 36) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 45) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 54) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 63) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 72) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 9 * 2) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 9 * 3) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 9 * 4) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 9 * 5) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 9 * 6) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 9 * 7) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 9 * 8) sudoku.cells
         ]
 
 
@@ -299,12 +299,12 @@ getSquare id sudoku =
         [ Maybe.withDefault emptyCell <| Array.get id sudoku.cells
         , Maybe.withDefault emptyCell <| Array.get (id + 1) sudoku.cells
         , Maybe.withDefault emptyCell <| Array.get (id + 2) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 9) sudoku.cells
         , Maybe.withDefault emptyCell <| Array.get (id + 10) sudoku.cells
         , Maybe.withDefault emptyCell <| Array.get (id + 11) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 12) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 18) sudoku.cells
+        , Maybe.withDefault emptyCell <| Array.get (id + 19) sudoku.cells
         , Maybe.withDefault emptyCell <| Array.get (id + 20) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 21) sudoku.cells
-        , Maybe.withDefault emptyCell <| Array.get (id + 22) sudoku.cells
         ]
 
 
@@ -313,14 +313,19 @@ squaresValid sudoku =
     let
         squares =
             [ getSquare 0 sudoku
-            , getSquare 1 sudoku
-            , getSquare 2 sudoku
             , getSquare 3 sudoku
-            , getSquare 4 sudoku
-            , getSquare 5 sudoku
             , getSquare 6 sudoku
-            , getSquare 7 sudoku
-            , getSquare 8 sudoku
+            , getSquare (3 * 9) sudoku
+            , getSquare (3 * 9 + 3) sudoku
+            , getSquare (3 * 9 + 6) sudoku
+            , getSquare (9 * 9) sudoku
+            , getSquare (9 * 9 + 3) sudoku
+            , getSquare (9 * 9 + 6) sudoku
             ]
     in
         List.foldl (&&) True <| List.map listValid squares
+
+
+stringify : Sudoku -> String
+stringify sudoku =
+    "String"
