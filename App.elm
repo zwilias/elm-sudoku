@@ -1,8 +1,8 @@
 port module App exposing (..)
 
-import Array
-import List.Extra as List
+import Array.Hamt as Array
 import Json.Encode exposing (Value, string)
+import List.Extra as List
 import Main exposing (..)
 import Task
 import Time
@@ -18,7 +18,7 @@ solve board =
     Time.now
         |> Task.map
             (\_ ->
-                resolveSudoku board
+                increment_sudoku board
             )
         |> Task.perform identity
 
@@ -36,15 +36,15 @@ boardToSolve : Sudoku
 boardToSolve =
     let
         cells =
-            [ [ Nothing, Nothing, Just 3, Just 9, Nothing, Nothing, Just 7, Just 6, Nothing ]
-            , [ Nothing, Just 4, Nothing, Nothing, Nothing, Just 6, Nothing, Nothing, Just 9 ]
-            , [ Just 6, Nothing, Just 7, Nothing, Just 1, Nothing, Nothing, Nothing, Just 4 ]
-            , [ Just 2, Nothing, Nothing, Just 6, Just 7, Nothing, Nothing, Just 9, Nothing ]
-            , [ Nothing, Nothing, Just 4, Just 3, Nothing, Just 5, Just 6, Nothing, Nothing ]
-            , [ Nothing, Just 1, Nothing, Nothing, Just 4, Just 9, Nothing, Nothing, Just 7 ]
-            , [ Just 7, Nothing, Nothing, Nothing, Just 9, Nothing, Just 2, Nothing, Just 1 ]
-            , [ Just 3, Nothing, Nothing, Just 2, Nothing, Nothing, Nothing, Just 4, Nothing ]
-            , [ Nothing, Just 2, Just 9, Nothing, Nothing, Just 8, Just 5, Nothing, Nothing ]
+            [ [ Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing ]
+            , [ Just 8, Nothing, Nothing, Just 6, Nothing, Nothing, Nothing, Nothing, Nothing ]
+            , [ Nothing, Nothing, Nothing, Nothing, Just 3, Just 2, Just 9, Just 8, Just 6 ]
+            , [ Nothing, Nothing, Just 7, Nothing, Just 8, Nothing, Just 2, Nothing, Just 1 ]
+            , [ Nothing, Nothing, Nothing, Nothing, Just 2, Nothing, Just 3, Just 4, Nothing ]
+            , [ Just 9, Nothing, Nothing, Just 7, Nothing, Nothing, Just 6, Nothing, Nothing ]
+            , [ Just 1, Nothing, Nothing, Nothing, Nothing, Just 3, Nothing, Nothing, Nothing ]
+            , [ Just 5, Just 9, Nothing, Nothing, Just 7, Nothing, Nothing, Nothing, Nothing ]
+            , [ Nothing, Just 8, Nothing, Just 1, Just 5, Nothing, Nothing, Nothing, Nothing ]
             ]
                 |> List.concat
                 |> List.map
@@ -58,7 +58,7 @@ boardToSolve =
                     )
                 |> Array.fromList
     in
-        { cells = cells, current_position = 0 }
+    { cells = cells, current_position = 0 }
 
 
 emitBoard : Sudoku -> Cmd msg
@@ -75,11 +75,12 @@ emitSolution solution =
         Just board ->
             "\n\nSolved!\n\n"
                 ++ stringify board
+                ++ "\n\n"
                 |> Json.Encode.string
                 |> emit
 
         Nothing ->
-            Json.Encode.string "\n\nFailed :()" |> emit
+            Json.Encode.string "\n\nFailed :()\n\n" |> emit
 
 
 stringifyRow : List String -> String
@@ -92,7 +93,7 @@ stringifyRow row =
 stringify : Sudoku -> String
 stringify sudoku =
     Array.toList sudoku.cells
-        |> List.map (.value)
+        |> List.map .value
         |> List.map
             (\n ->
                 if n == 0 then

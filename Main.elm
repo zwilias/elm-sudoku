@@ -1,30 +1,30 @@
 module Main exposing (..)
 
-import Array exposing (Array)
-import List.Extra as List
-import Set
+import Array.Hamt as Array exposing (Array)
 import Html
 import Html.Attributes exposing (..)
+import List.Extra as List
+import Set
 
 
 main : Html.Html msg
 main =
     let
         sudoku =
-            case resolveSudoku sudokuGrid of
+            case increment_sudoku sudokuGrid of
                 Nothing ->
                     initSudoku
 
                 Just s ->
                     s
     in
-        Html.div []
-            [ Html.h1 [] [ Html.text "Sudoku - Power thigh" ]
-            , Html.h2 [] [ Html.text "Attempting to solve" ]
-            , Html.div [ class "sudoku" ] <| stringify sudokuGrid
-            , Html.h2 [] [ Html.text "Solution" ]
-            , Html.div [ class "sudoku" ] <| stringify sudoku
-            ]
+    Html.div []
+        [ Html.h1 [] [ Html.text "Sudoku - Power thigh" ]
+        , Html.h2 [] [ Html.text "Attempting to solve" ]
+        , Html.div [ class "sudoku" ] <| stringify sudokuGrid
+        , Html.h2 [] [ Html.text "Solution" ]
+        , Html.div [ class "sudoku" ] <| stringify sudoku
+        ]
 
 
 type alias Sudoku =
@@ -69,109 +69,135 @@ sudokuGrid =
               emptyCell
             , emptyCell
             , fixedCell 3
-              -- 2
+
+            -- 2
             , fixedCell 9
             , emptyCell
             , emptyCell
-              -- 3
+
+            -- 3
             , fixedCell 7
             , fixedCell 6
             , emptyCell
-              -- 1
+
+            -- 1
             , emptyCell
             , fixedCell 4
             , emptyCell
-              -- 2
+
+            -- 2
             , emptyCell
             , emptyCell
             , fixedCell 6
-              -- 3
+
+            -- 3
             , emptyCell
             , emptyCell
             , fixedCell 9
-              -- 1
+
+            -- 1
             , fixedCell 6
             , emptyCell
             , fixedCell 7
-              -- 2
+
+            -- 2
             , emptyCell
             , fixedCell 1
             , emptyCell
-              -- 3
+
+            -- 3
             , emptyCell
             , emptyCell
             , fixedCell 4
-              -- Second Line
-              -- 4
+
+            -- Second Line
+            -- 4
             , fixedCell 2
             , emptyCell
             , emptyCell
-              -- 5
+
+            -- 5
             , fixedCell 6
             , fixedCell 7
             , emptyCell
-              -- 6
+
+            -- 6
             , emptyCell
             , fixedCell 9
             , emptyCell
-              -- 4
+
+            -- 4
             , emptyCell
             , emptyCell
             , fixedCell 4
-              -- 5
+
+            -- 5
             , fixedCell 3
             , emptyCell
             , fixedCell 5
-              -- 6
+
+            -- 6
             , fixedCell 6
             , emptyCell
             , emptyCell
-              -- 4
+
+            -- 4
             , emptyCell
             , fixedCell 1
             , emptyCell
-              -- 5
+
+            -- 5
             , emptyCell
             , fixedCell 4
             , fixedCell 9
-              -- 6
+
+            -- 6
             , emptyCell
             , emptyCell
             , fixedCell 7
-              -- Last line
-              -- 7
+
+            -- Last line
+            -- 7
             , fixedCell 7
             , emptyCell
             , emptyCell
-              -- 8
+
+            -- 8
             , emptyCell
             , fixedCell 9
             , emptyCell
-              -- 9
+
+            -- 9
             , fixedCell 2
             , emptyCell
             , fixedCell 1
-              -- 7
+
+            -- 7
             , fixedCell 3
             , emptyCell
             , emptyCell
-              -- 8
+
+            -- 8
             , fixedCell 2
             , emptyCell
             , emptyCell
-              -- 9
+
+            -- 9
             , emptyCell
             , fixedCell 4
             , emptyCell
-              -- 7
+
+            -- 7
             , emptyCell
             , fixedCell 2
             , fixedCell 9
-              -- 8
+
+            -- 8
             , emptyCell
             , emptyCell
             , fixedCell 8
-              -- 9
+
+            -- 9
             , fixedCell 5
             , emptyCell
             , emptyCell
@@ -191,7 +217,7 @@ get_current_cell sudoku =
             Array.get sudoku.current_position sudoku.cells
                 |> Maybe.withDefault emptyCell
     in
-        current_cell
+    current_cell
 
 
 next_cell : Sudoku -> Maybe Sudoku
@@ -201,9 +227,9 @@ next_cell sudoku =
     else
         let
             next_position =
-                (sudoku.current_position + 1)
+                sudoku.current_position + 1
         in
-            Just { sudoku | current_position = next_position }
+        Just { sudoku | current_position = next_position }
 
 
 previous_cell : Sudoku -> Maybe Sudoku
@@ -220,19 +246,19 @@ next_editable_cell sudoku =
         next_sudoku =
             next_cell sudoku
     in
-        case next_sudoku of
-            Nothing ->
-                Nothing
+    case next_sudoku of
+        Nothing ->
+            Nothing
 
-            Just current_sudoku ->
-                let
-                    current_cell =
-                        get_current_cell current_sudoku
-                in
-                    if current_cell.editable then
-                        Just current_sudoku
-                    else
-                        next_editable_cell current_sudoku
+        Just current_sudoku ->
+            let
+                current_cell =
+                    get_current_cell current_sudoku
+            in
+            if current_cell.editable then
+                Just current_sudoku
+            else
+                next_editable_cell current_sudoku
 
 
 previous_editable_cell : Sudoku -> Maybe Sudoku
@@ -241,19 +267,19 @@ previous_editable_cell sudoku =
         next_sudoku =
             previous_cell sudoku
     in
-        case next_sudoku of
-            Nothing ->
-                Nothing
+    case next_sudoku of
+        Nothing ->
+            Nothing
 
-            Just current_sudoku ->
-                let
-                    current_cell =
-                        get_current_cell current_sudoku
-                in
-                    if current_cell.editable then
-                        Just current_sudoku
-                    else
-                        previous_editable_cell current_sudoku
+        Just current_sudoku ->
+            let
+                current_cell =
+                    get_current_cell current_sudoku
+            in
+            if current_cell.editable then
+                Just current_sudoku
+            else
+                previous_editable_cell current_sudoku
 
 
 
@@ -265,29 +291,6 @@ sudokuValid sudoku =
     linesValid sudoku && columnsValid sudoku && squaresValid sudoku
 
 
-resolveSudoku : Sudoku -> Maybe Sudoku
-resolveSudoku sudoku =
-    if sudokuValid sudoku then
-        if sudoku.current_position == 81 then
-            -- Sudoku resolved
-            Just sudoku
-        else
-            increment_sudoku sudoku
-    else
-        -- Sudoku invalid
-        Nothing
-
-
-brute_force : Maybe Sudoku -> Maybe Sudoku
-brute_force sudoku =
-    case sudoku of
-        Nothing ->
-            Nothing
-
-        Just current_sudoku ->
-            resolveSudoku current_sudoku
-
-
 set_current_value : Int -> Sudoku -> Sudoku
 set_current_value value sudoku =
     let
@@ -297,10 +300,10 @@ set_current_value value sudoku =
         next_cell =
             { current_cell | value = value }
     in
-        { sudoku
-            | cells =
-                Array.set sudoku.current_position next_cell sudoku.cells
-        }
+    { sudoku
+        | cells =
+            Array.set sudoku.current_position next_cell sudoku.cells
+    }
 
 
 increment_sudoku : Sudoku -> Maybe Sudoku
@@ -317,24 +320,33 @@ increment_sudoku sudoku =
         current_cell =
             get_current_cell sudoku
     in
-        if current_cell.editable then
-            if current_cell.value == 9 then
-                set_current_value 0 sudoku
-                    |> previous_editable_cell
-                    |> brute_force
-            else
-                let
-                    next_sudoku =
-                        set_current_value (current_cell.value + 1) sudoku
-                in
-                    if sudokuValid next_sudoku then
-                        next_editable_cell next_sudoku
-                            |> brute_force
-                    else
-                        increment_sudoku next_sudoku
+    if current_cell.editable then
+        if current_cell.value == 9 then
+            set_current_value 0 sudoku
+                |> previous_editable_cell
+                |> Maybe.withDefault sudoku
+                |> increment_sudoku
         else
-            next_editable_cell sudoku
-                |> brute_force
+            let
+                next_sudoku =
+                    set_current_value (current_cell.value + 1) sudoku
+            in
+            if sudokuValid next_sudoku then
+                case next_editable_cell next_sudoku of
+                    Just next ->
+                        increment_sudoku next
+
+                    Nothing ->
+                        Just next_sudoku
+            else
+                increment_sudoku next_sudoku
+    else
+        case next_editable_cell sudoku of
+            Just next ->
+                increment_sudoku next
+
+            Nothing ->
+                Nothing
 
 
 
@@ -356,7 +368,7 @@ listValid list =
         unique_numbers =
             Set.fromList <| Array.toList numbers
     in
-        (List.length <| Set.toList unique_numbers) == Array.length numbers
+    Set.size unique_numbers == Array.length numbers
 
 
 
@@ -378,7 +390,7 @@ linesValid sudoku =
             , Array.slice 72 81 sudoku.cells
             ]
     in
-        List.foldl (&&) True <| List.map listValid lines
+    List.foldl (&&) True <| List.map listValid lines
 
 
 
@@ -415,7 +427,7 @@ columnsValid sudoku =
             , getColumn 8 sudoku
             ]
     in
-        List.foldl (&&) True <| List.map listValid columns
+    List.foldl (&&) True <| List.map listValid columns
 
 
 
@@ -452,7 +464,7 @@ squaresValid sudoku =
             , getSquare (9 * 9 + 6) sudoku
             ]
     in
-        List.foldl (&&) True <| List.map listValid squares
+    List.foldl (&&) True <| List.map listValid squares
 
 
 stringifyRow : List String -> String
@@ -465,7 +477,7 @@ stringifyRow row =
 stringify : Sudoku -> List (Html.Html msg)
 stringify sudoku =
     Array.toList sudoku.cells
-        |> List.map (.value)
+        |> List.map .value
         |> List.map
             (\n ->
                 if n == 0 then
